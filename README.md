@@ -33,6 +33,8 @@ The dataset used for this project consists of real and fake images collected fro
 
 4. **Visualization (Optional):** Visualize model predictions and performance metrics using Matplotlib or any other visualization library. This can help in understanding the model's behavior and identifying areas for improvement.
 
+##Results
+![Result](https://github.com/gokulaarimuthu/fake-image-detection-mobilenet/assets/127466084/59687321-c974-46d5-b49d-bc5be9fe0faf)
 
 
 Feel free to customize this template to suit your project's specific details and requirements!
