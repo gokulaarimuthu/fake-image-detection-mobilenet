@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Forgery Detection</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url("{{ url_for('static', filename='bg.jpg') }}");
+			background-size: cover;
+			background-position: center-center;
+			background-repeat: no-repeat;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 50px 20px;
+            text-align: center;
+            color: white;
+        }
+
+        h1 {
+            font-size: 40px;
+            font-family: 'Bungee', cursive;
+            margin: 20px 0;
+            padding: 10px;
+        }
+
+        p {
+            font-size: 20px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-family: 'Montserrat', sans-serif;
+            padding: 0 10px;
+        }
+
+        .submitButton {
+            padding: 15px 30px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 20px;
+            transition: background-color 0.3s ease;
+            margin-bottom: 40px;
+        }
+
+        .submitButton:hover {
+            background-color: #0056b3;
+        }
+
+        /* Hide the input field */
+        input[type="file"] {
+            display: none;
+        }
+
+        #output {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #FFA500;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .loader {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #3498db;
+            border-radius: 50%;
+            width: 60px; /* Reduced size */
+            height: 60px; /* Reduced size */
+            animation: spin 2s linear infinite;
+            margin: auto;
+            position: absolute; /* Position relative to parent */
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
+            z-index: 999; /* Ensure it's above other content */
+            display: none; /* Initially hidden */
+            text-align: center; /* Center loader horizontally */
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 style="font-size: 48px;">Image Forgery Detection</h1>
+    <p>Identify whether an image has been manipulated or forged.</p>
+    <form id="imageForm" enctype="multipart/form-data">
+        <label for="imageInput" class="submitButton">Upload Image</label>
+        <input type="file" id="imageInput" accept="image/*" class="inputField">
+    </form>
+    <div id="output"></div>
+    <div id="loader-overlay" class="loader-overlay">
+        <div id="loader" class="loader"></div>
+    </div>
+</div>
+</body>
+</html>
+
+<script>
+    document.getElementById('imageInput').addEventListener('change', handleImageUpload);
+
+    function handleImageUpload(event) {
+        const file = event.target.files[0];
+        const formData = new FormData();
+        formData.append('image', file);
+
+        // Show loader overlay
+        document.getElementById('loader-overlay').style.display = 'block';
+
+        // Send image data to backend for processing
+        fetch('/_', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Process the response from the backend
+            document.getElementById('output').innerText = data.result;
+            // Hide loader overlay
+            document.getElementById('loader-overlay').style.display = 'none';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Hide loader overlay on error
+            document.getElementById('loader-overlay').style.display = 'none';
+        });
+    }
+</script>
